@@ -26,7 +26,8 @@ module.exports = {
     dialectModule: pg,
     dialectOptions: {
       ssl: {
-        require: "true",
+        require: true,
+        rejectUnauthorized: false, // only use this for development
       },
     },
     timezone: "+07:00",
