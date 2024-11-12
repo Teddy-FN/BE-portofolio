@@ -14,10 +14,10 @@ module.exports = sequelize.define(
       type: DataTypes.STRING,
     },
     experience: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     email: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
     },
     nationality: {
       type: DataTypes.STRING,
