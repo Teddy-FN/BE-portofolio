@@ -9,6 +9,6 @@ app.get("/get-about-me", aboutMeController.getAboutMe);
 
 app.post("/add-about-me", aboutMeController.postAboutMe);
 
-app.put("/edit-about-me", aboutMeController.editAboutMe);
+app.put("/edit-about-me/:id", aboutMeController.editAboutMe);
 
 module.exports = app;
