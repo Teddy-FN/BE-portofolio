@@ -10,18 +10,19 @@ module.exports = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    greetings: {
+    degree: {
+      primaryKey: true,
       type: DataTypes.STRING,
     },
-    name: {
-      type: DataTypes.TEXT,
+    startDate: {
+      type: DataTypes.STRING,
     },
-    email: {
-      type: DataTypes.BOOLEAN,
+    endDate: {
+      type: DataTypes.STRING,
     },
-    status: {
+    institution: {
       primaryKey: true,
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
     },
     createdBy: {
       type: DataTypes.STRING,
