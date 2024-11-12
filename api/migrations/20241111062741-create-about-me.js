@@ -13,10 +13,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       experience: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       email: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
       },
       nationality: {
         type: Sequelize.STRING,

@@ -7,8 +7,12 @@ const app = express();
 
 // Routes
 const descriptionRoutes = require("./routes/description");
+const greetingsRoutes = require("./routes/greetings");
+const aboutMeRoutes = require("./routes/about-me");
 
 app.use("/description", descriptionRoutes);
+app.use("/greeting", greetingsRoutes);
+app.use("/about-me", aboutMeRoutes);
 
 // Error App
 app.use("*", (req, res, next) => {
