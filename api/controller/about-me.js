@@ -2,7 +2,7 @@ const AboutMe = require("../models/about_me");
 
 exports.getAboutMe = async (req, res, next) => {
   try {
-    const getData = await AboutMe.findAll();
+    const getData = await AboutMe.findOne();
     return res.status(200).json({ message: "Success", data: getData });
   } catch (error) {
     console.error("Error:", error);
