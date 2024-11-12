@@ -9,10 +9,16 @@ const app = express();
 const descriptionRoutes = require("./routes/description");
 const greetingsRoutes = require("./routes/greetings");
 const aboutMeRoutes = require("./routes/about-me");
+const educationRoutes = require("./routes/education");
+const experienceRoutes = require("./routes/experience");
+const skillsRoutes = require("./routes/skills");
 
 app.use("/description", descriptionRoutes);
 app.use("/greeting", greetingsRoutes);
 app.use("/about-me", aboutMeRoutes);
+app.use("/education", educationRoutes);
+app.use("/experience", experienceRoutes);
+app.use("/skills", skillsRoutes);
 
 // Error App
 app.use("*", (req, res, next) => {
