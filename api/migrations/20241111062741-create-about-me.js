@@ -12,6 +12,12 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      photo: {
+        type: Sequelize.STRING,
+      },
+      position: {
+        type: Sequelize.STRING,
+      },
       experience: {
         type: Sequelize.INTEGER,
       },
