@@ -1,4 +1,92 @@
 const Project = require("../models/project");
+const fs = require("fs");
+
+const CLIENT_ID =
+  "141136956429-99c0hj1rcg4hej4dvain1vsb3lh53o54.apps.googleusercontent.com";
+const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const REFRESH_TOKEN =
+  "1//04_iF_x-FZ36ECgYIARAAGAQSNwF-L9Ir_AMpA8phmYWeEdiFaIz1knq2eDSoVfAk3FgISfP0KDCafyzg0Yw0zHSyDj6Ak-mr8K0";
+
+// Load Google API credentials
+const oauth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
+
+// Set the credentials
+oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+const folderId = "18NLVXWzBWsi3N_JEaDnDjWEBBwd0y2oA"; // Replace with your Google Drive folder ID
+
+// Function to search for a file in Google Drive by name
+const findFileByName = async (fileName) => {
+  try {
+    const response = await drive.files.list({
+      q: `name='${fileName}' and '${folderId}' in parents`,
+      fields: "files(id, name)",
+      spaces: "drive",
+    });
+    return response.data.files[0]; // Return the first matching file if found
+  } catch (error) {
+    throw new Error("Error searching for file on Google Drive");
+  }
+};
+
+// Function to delete a file by its Google Drive file ID
+const deleteFile = async (fileId) => {
+  try {
+    await drive.files.delete({ fileId });
+  } catch (error) {
+    throw new Error("Error deleting file from Google Drive");
+  }
+};
+
+// Function to upload an image to Google Drive
+const uploadImageToDrive = async (filePath, fileName) => {
+  const accessTokenInfo = await oauth2Client.getAccessToken();
+
+  if (!accessTokenInfo.token) {
+    throw new Error("Failed to obtain access token");
+  }
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error("File not found");
+  }
+
+  const fileMetadata = {
+    name: fileName,
+    parents: [folderId],
+  };
+
+  const media = {
+    mimeType: "image/jpeg",
+    body: fs.createReadStream(filePath),
+  };
+
+  try {
+    const { data: file } = await drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: "id",
+    });
+
+    await drive.permissions.create({
+      fileId: file.id,
+      requestBody: {
+        role: "reader",
+        type: "anyone",
+      },
+    });
+
+    return `https://drive.google.com/uc?id=${file.id}`;
+  } catch (error) {
+    throw new Error("Failed to upload image");
+  }
+};
+
+// Use the access token for the Drive API
+const drive = google.drive({ version: "v3", auth: oauth2Client });
 
 exports.getProject = async (req, res, next) => {
   try {
