@@ -13,6 +13,12 @@ module.exports = sequelize.define(
     name: {
       type: DataTypes.STRING,
     },
+    photo: {
+      type: DataTypes.STRING,
+    },
+    position: {
+      type: DataTypes.STRING,
+    },
     experience: {
       type: DataTypes.INTEGER,
     },
