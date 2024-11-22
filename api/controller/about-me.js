@@ -5,6 +5,7 @@ const AboutMe = require("../models/about_me");
 const CLIENT_ID =
   "141136956429-99c0hj1rcg4hej4dvain1vsb3lh53o54.apps.googleusercontent.com";
 const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const CLIENT_SECRET = "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";
 const REFRESH_TOKEN =
   "1//04_iF_x-FZ36ECgYIARAAGAQSNwF-L9Ir_AMpA8phmYWeEdiFaIz1knq2eDSoVfAk3FgISfP0KDCafyzg0Yw0zHSyDj6Ak-mr8K0";
 
