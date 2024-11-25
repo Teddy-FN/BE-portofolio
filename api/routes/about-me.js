@@ -6,7 +6,6 @@ const multer = require("multer");
 // Define the writable upload directory for serverless environments
 const uploadDir = "/tmp/uploads";
 
-// Ensure the /tmp/uploads directory exists (required for AWS Lambda)
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

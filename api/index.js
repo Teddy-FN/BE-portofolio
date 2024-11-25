@@ -1,11 +1,21 @@
 require("dotenv").config({ path: `${process.cwd()}/.env` });
 const PORT = process.env.APP_PORT || 7000;
-
+// const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
 
+const corsOptions = {
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+// Middleware
+app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// app.use(cookieParser());
 app.use(
   cors({
     origin: "*",

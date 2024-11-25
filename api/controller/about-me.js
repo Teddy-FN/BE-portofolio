@@ -47,6 +47,7 @@ const deleteFile = async (fileId) => {
 // Function to upload an image to Google Drive
 const uploadImageToDrive = async (filePath, fileName) => {
   const accessTokenInfo = await oauth2Client.getAccessToken();
+  console.log("accessTokenInfo =>", accessTokenInfo);
 
   if (!accessTokenInfo.token) {
     throw new Error("Failed to obtain access token");
@@ -93,6 +94,8 @@ const drive = google.drive({ version: "v3", auth: oauth2Client });
 exports.getAboutMe = async (req, res, next) => {
   try {
     const getData = await AboutMe.findOne();
+    console.log("getData =>", getData);
+
     return res.status(200).json({ message: "Success", data: getData });
   } catch (error) {
     console.error("Error:", error);
@@ -114,8 +117,10 @@ exports.postAboutMe = async (req, res, next) => {
     languages,
     createdBy,
   } = req.body;
+
   try {
     const imageFile = req.file;
+
     let imageUrl = null;
 
     if (imageFile) {
@@ -134,23 +139,34 @@ exports.postAboutMe = async (req, res, next) => {
       );
     }
 
+    // Ensure photo URL is valid
+    const finalImageUrl =
+      imageUrl || (typeof image === "string" ? image : null);
+    console.log("finalImageUrl =>", finalImageUrl);
+
+    if (!finalImageUrl) {
+      return res.status(400).json({ message: "Invalid image URL" });
+    }
+
+    // Convert languages string to array
+    const languagesArray =
+      typeof languages === "string" ? languages.split(",") : languages;
+
     const getData = await AboutMe.create({
-      photo: imageUrl || image, // Use the uploaded image URL or fallback to provided image
+      photo: finalImageUrl,
       name,
       experience,
       email,
       nationality,
-      freelance,
-      languages,
+      freelance: freelance === "true", // Ensure boolean type
+      languages: languagesArray,
       createdBy,
     });
+
     return res.status(200).json({ message: "Success", data: getData });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    console.log("resEND");
-    return res.end();
   }
 };
 
