@@ -5,9 +5,9 @@ const fs = require("fs");
 const CLIENT_ID =
   "141136956429-99c0hj1rcg4hej4dvain1vsb3lh53o54.apps.googleusercontent.com";
 const REDIRECT_URI = "https://developers.google.com/oauthplayground";
-const CLIENT_SECRET = "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";
+const CLIENT_SECRET = "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";
 const REFRESH_TOKEN =
-  "1//04_iF_x-FZ36ECgYIARAAGAQSNwF-L9Ir_AMpA8phmYWeEdiFaIz1knq2eDSoVfAk3FgISfP0KDCafyzg0Yw0zHSyDj6Ak-mr8K0";
+  "1//04k2p2YVW5ToUCgYIARAAGAQSNwF-L9IrawigEyVlCgfrBA890D2p7HafR0usMsGjKgxvjcXpb80LgbMBereg5VgeLqbbGPNTK34";
 
 // Load Google API credentials
 const oauth2Client = new google.auth.OAuth2(
@@ -20,6 +20,8 @@ const oauth2Client = new google.auth.OAuth2(
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const folderId = "18NLVXWzBWsi3N_JEaDnDjWEBBwd0y2oA"; // Replace with your Google Drive folder ID
+// Use the access token for the Drive API
+const drive = google.drive({ version: "v3", auth: oauth2Client });
 
 // Function to search for a file in Google Drive by name
 const findFileByName = async (fileName) => {
@@ -31,6 +33,7 @@ const findFileByName = async (fileName) => {
     });
     return response.data.files[0]; // Return the first matching file if found
   } catch (error) {
+    console.error("Error during file search:", error.message);
     throw new Error("Error searching for file on Google Drive");
   }
 };
@@ -40,6 +43,7 @@ const deleteFile = async (fileId) => {
   try {
     await drive.files.delete({ fileId });
   } catch (error) {
+    console.error("Error during file deletion:", error.message);
     throw new Error("Error deleting file from Google Drive");
   }
 };
@@ -83,37 +87,86 @@ const uploadImageToDrive = async (filePath, fileName) => {
 
     return `https://drive.google.com/uc?id=${file.id}`;
   } catch (error) {
+    console.error("Error during file upload:", error.message);
     throw new Error("Failed to upload image");
   }
 };
 
-// Use the access token for the Drive API
-const drive = google.drive({ version: "v3", auth: oauth2Client });
-
 exports.getProject = async (req, res, next) => {
   try {
-    const getData = await Project.findOne();
-    return res.status(200).json({ message: "Success", data: getData });
+    const { page = 1, limit = 10, isTable = false } = req.query;
+
+    const currentPage = parseInt(page, 10);
+    const pageSize = parseInt(limit, 10);
+
+    let options = {};
+
+    if (isTable === "true") {
+      options = {
+        limit: pageSize,
+        offset: (currentPage - 1) * pageSize,
+      };
+    }
+
+    const { count, rows } = await Project.findAndCountAll(options);
+
+    return res.status(200).json({
+      message: "Success",
+      data: rows,
+      meta:
+        isTable === "true"
+          ? {
+              totalItems: count,
+              totalPages: Math.ceil(count / pageSize),
+              currentPage,
+            }
+          : null,
+    });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   } finally {
     console.log("resEND");
-    return res.end();
   }
 };
 
 exports.postProject = async (req, res) => {
-  const { num, category, img, title, description, live, github, createdBy } =
+  const { category, stack, title, description, live, github, createdBy } =
     req.body;
 
   try {
+    const imageFile = req.file;
+
+    let imageUrl = null;
+
+    if (imageFile) {
+      // Check if a file with the same name exists on Google Drive
+      const existingFile = await findFileByName(imageFile.originalname);
+
+      // If file exists, delete the old image from Google Drive
+      if (existingFile) {
+        await deleteFile(existingFile.id);
+      }
+
+      imageUrl = await uploadImageToDrive(
+        imageFile.path,
+        imageFile.originalname
+      );
+    }
+
+    // Ensure photo URL is valid
+    const finalImageUrl = imageUrl;
+
+    if (!finalImageUrl) {
+      return res.status(400).json({ message: "Invalid image URL" });
+    }
+
     const newProject = await Project.create({
-      num,
       category,
-      img,
+      img: finalImageUrl,
       title,
       description,
+      stack: stack?.includes(",") ? stack?.split(",") : [stack],
       live,
       github,
       createdBy,
@@ -128,15 +181,46 @@ exports.postProject = async (req, res) => {
   }
 };
 
+// Get By ID
+exports.getProjectById = async (req, res, next) => {
+  try {
+    // Ambil ID dari parameter URL
+    const { id } = req.params;
+
+    // Cari data berdasarkan ID
+    const data = await Project.findOne({
+      where: { id }, // Gunakan id sebagai kondisi
+    });
+
+    // Jika data tidak ditemukan, kirim respons 404
+    if (!data) {
+      return res.status(404).json({
+        message: "Data not found",
+      });
+    }
+
+    // Kirim respons dengan data yang ditemukan
+    return res.status(200).json({
+      message: "Success",
+      data,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    console.log("resEND");
+  }
+};
+
 exports.editProject = async (req, res) => {
   const { id } = req.params;
   const {
-    num,
     category,
     img,
     title,
     description,
     live,
+    stack,
     github,
     createdBy,
     modifiedBy,
@@ -152,7 +236,6 @@ exports.editProject = async (req, res) => {
 
     // Check if the data is unchanged
     const isSameData =
-      project.num === num &&
       project.category === category &&
       project.img === img &&
       project.title === title &&
@@ -170,11 +253,11 @@ exports.editProject = async (req, res) => {
     // Update project data
     const updatedProject = await project.update(
       {
-        num,
         category,
         img,
         title,
         description,
+        stack: stack?.includes(",") ? stack?.split(",") : [stack],
         live,
         github,
         modifiedBy,
@@ -191,22 +274,36 @@ exports.editProject = async (req, res) => {
   }
 };
 
-exports.deleteProject = async (req, res) => {
-  const { id } = req.params;
-
+exports.deleteProject = async (req, res, next) => {
   try {
-    const project = await Project.findByPk(id);
+    // Ambil ID dari parameter URL
+    const { id } = req.params;
 
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+    // Cari data berdasarkan ID
+    const existingData = await Project.findOne({
+      where: { id },
+    });
+
+    // Jika data tidak ditemukan, kirim respons 404
+    if (!existingData) {
+      return res.status(404).json({
+        message: "Data not found",
+      });
     }
 
-    // Soft delete the project
-    await project.destroy();
+    // Hapus data
+    await Project.destroy({
+      where: { id },
+    });
 
-    return res.status(200).json({ message: "Project deleted successfully" });
+    // Kirim respons sukses
+    return res.status(200).json({
+      message: "Delete successful",
+    });
   } catch (error) {
-    console.error("Error deleting project:", error);
+    console.error("Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    console.log("resEND");
   }
 };

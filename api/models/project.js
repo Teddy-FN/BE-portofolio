@@ -10,12 +10,6 @@ module.exports = sequelize.define(
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    num: {
-      type: DataTypes.STRING,
-    },
-    category: {
-      type: DataTypes.STRING,
-    },
     img: {
       type: DataTypes.STRING,
     },
@@ -28,8 +22,14 @@ module.exports = sequelize.define(
     live: {
       type: DataTypes.STRING,
     },
-    github: {
+    category: {
       type: DataTypes.STRING,
+    },
+    stack: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+    },
+    github: {
+      type: DataTypes.JSONB,
     },
     createdBy: {
       type: DataTypes.STRING,
