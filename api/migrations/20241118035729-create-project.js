@@ -2,18 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Project", {
+    await queryInterface.createTable("project", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
-      },
-      num: {
-        type: Sequelize.STRING,
-      },
-      category: {
-        type: Sequelize.STRING,
       },
       img: {
         type: Sequelize.STRING,
@@ -27,8 +21,14 @@ module.exports = {
       live: {
         type: Sequelize.STRING,
       },
-      github: {
+      category: {
         type: Sequelize.STRING,
+      },
+      stack: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+      },
+      github: {
+        type: Sequelize.JSONB,
       },
       createdBy: {
         type: Sequelize.STRING,
@@ -50,6 +50,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Project");
+    await queryInterface.dropTable("project");
   },
 };
