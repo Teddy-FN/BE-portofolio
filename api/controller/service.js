@@ -42,11 +42,17 @@ exports.postService = async (req, res, next) => {
   const { name, description, createdBy } = req.body;
 
   try {
+    const existingSkill = await Service.findOne({ where: { name } });
+    if (existingSkill) {
+      return res.status(400).json({ message: "Service already exists" });
+    }
+
     const newData = await Service.create({
       name,
       description,
       createdBy,
     });
+
     return res.status(201).json({ message: "Success", data: newData });
   } catch (error) {
     console.error("Error:", error);

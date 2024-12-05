@@ -42,14 +42,20 @@ exports.postEducation = async (req, res, next) => {
   const { degree, start, end, education, createdBy } = req.body;
 
   try {
-    const getData = await Education.create({
+    const existingSkill = await Education.findOne({ where: { education } });
+    if (existingSkill) {
+      return res.status(400).json({ message: "Education already exists" });
+    }
+
+    const newData = await Education.create({
       degree,
       startDate: start,
       endDate: end,
       institution: education,
       createdBy,
     });
-    return res.status(201).json({ message: "Success", data: getData });
+
+    return res.status(201).json({ message: "Success", data: newData });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });

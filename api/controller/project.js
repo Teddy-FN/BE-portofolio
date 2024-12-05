@@ -137,30 +137,38 @@ exports.postProject = async (req, res) => {
   try {
     const imageFile = req.file;
 
+    // Cek apakah title sudah ada di tabel
+    const existingProject = await Project.findOne({ where: { title } });
+    if (existingProject) {
+      return res.status(400).json({ message: "Project title already exists" });
+    }
+
     let imageUrl = null;
 
     if (imageFile) {
-      // Check if a file with the same name exists on Google Drive
+      // Periksa apakah file dengan nama yang sama sudah ada di Google Drive
       const existingFile = await findFileByName(imageFile.originalname);
 
-      // If file exists, delete the old image from Google Drive
+      // Jika file ada, hapus file lama dari Google Drive
       if (existingFile) {
         await deleteFile(existingFile.id);
       }
 
+      // Unggah gambar baru ke Google Drive
       imageUrl = await uploadImageToDrive(
         imageFile.path,
         imageFile.originalname
       );
     }
 
-    // Ensure photo URL is valid
+    // Validasi URL gambar
     const finalImageUrl = imageUrl;
 
     if (!finalImageUrl) {
       return res.status(400).json({ message: "Invalid image URL" });
     }
 
+    // Buat entri baru di tabel Project
     const newProject = await Project.create({
       category,
       img: finalImageUrl,

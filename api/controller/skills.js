@@ -42,10 +42,16 @@ exports.postSkills = async (req, res, next) => {
   const { name, createdBy } = req.body;
 
   try {
+    const existingSkill = await Skills.findOne({ where: { name } });
+    if (existingSkill) {
+      return res.status(400).json({ message: "Skill name already exists" });
+    }
+
     const newData = await Skills.create({
       name,
       createdBy,
     });
+
     return res.status(201).json({ message: "Success", data: newData });
   } catch (error) {
     console.error("Error:", error);

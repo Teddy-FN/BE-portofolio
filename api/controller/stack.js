@@ -17,19 +17,23 @@ exports.postStack = async (req, res) => {
   const { name, icon, createdBy } = req.body;
 
   try {
-    // Create a new record in Stack table
+    const existingSkill = await Stack.findOne({ where: { name } });
+    if (existingSkill) {
+      return res.status(400).json({ message: "Stack already exists" });
+    }
+
     const newStack = await Stack.create({
       name,
       icon,
       createdBy,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Stack created successfully", data: newStack });
+    return res.status(201).json({ message: "Success", data: newData });
   } catch (error) {
-    console.error("Error creating stack:", error);
+    console.error("Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    console.log("resEND");
   }
 };
 
