@@ -73,6 +73,11 @@ exports.postExperience = async (req, res, next) => {
   const { start, end, placeWork, position, description, createdBy } = req.body;
 
   try {
+    const existingSkill = await Experience.findOne({ where: { placeWork } });
+    if (existingSkill) {
+      return res.status(400).json({ message: "Experience already exists" });
+    }
+
     const newData = await Experience.create({
       company: placeWork,
       startDate: start,
@@ -81,6 +86,7 @@ exports.postExperience = async (req, res, next) => {
       position,
       createdBy,
     });
+
     return res.status(201).json({ message: "Success", data: newData });
   } catch (error) {
     console.error("Error:", error);
