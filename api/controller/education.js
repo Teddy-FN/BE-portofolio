@@ -42,7 +42,9 @@ exports.postEducation = async (req, res, next) => {
   const { degree, start, end, education, createdBy } = req.body;
 
   try {
-    const existingSkill = await Education.findOne({ where: { education } });
+    const existingSkill = await Education.findOne({
+      where: { institution: education },
+    });
     if (existingSkill) {
       return res.status(400).json({ message: "Education already exists" });
     }
