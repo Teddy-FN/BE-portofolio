@@ -22,6 +22,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       category: {
+        primaryKey: true,
         type: Sequelize.STRING,
       },
       stack: {

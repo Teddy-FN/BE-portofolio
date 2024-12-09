@@ -92,6 +92,36 @@ const uploadImageToDrive = async (filePath, fileName) => {
   }
 };
 
+exports.getProjectByCategory = async (req, res, next) => {
+  try {
+    // Ambil ID dari parameter URL
+    const { category } = req.params;
+
+    // Cari data berdasarkan category
+    const data = await Project.findAll({
+      where: { category: category }, // Gunakan id sebagai kondisi
+    });
+
+    // Jika data tidak ditemukan, kirim respons 404
+    if (!data) {
+      return res.status(404).json({
+        message: "Data not found",
+      });
+    }
+
+    // Kirim respons dengan data yang ditemukan
+    return res.status(200).json({
+      message: "Success",
+      data,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    console.log("resEND");
+  }
+};
+
 exports.getProject = async (req, res, next) => {
   try {
     const { page = 1, limit = 10, isTable = false } = req.query;

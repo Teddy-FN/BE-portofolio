@@ -31,6 +31,11 @@ const projectController = require("../controller/project");
 
 app.get("/get-project", projectController.getProject);
 
+app.get(
+  "/get-project-by-category/:category",
+  projectController.getProjectByCategory
+);
+
 app.post("/add-project", upload, projectController.postProject);
 
 app.get("/get-project/:id", projectController.getProjectById);
