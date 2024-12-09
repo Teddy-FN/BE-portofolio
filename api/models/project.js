@@ -23,6 +23,7 @@ module.exports = sequelize.define(
       type: DataTypes.STRING,
     },
     category: {
+      primaryKey: true,
       type: DataTypes.STRING,
     },
     stack: {
