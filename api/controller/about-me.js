@@ -112,6 +112,8 @@ exports.postAboutMe = async (req, res, next) => {
     name,
     experience,
     email,
+    phoneNumber,
+    address,
     nationality,
     freelance,
     languages,
@@ -158,6 +160,8 @@ exports.postAboutMe = async (req, res, next) => {
       experience,
       email,
       nationality,
+      phoneNumber,
+      address,
       freelance: freelance === "true", // Ensure boolean type
       languages: languagesArray,
       createdBy,
@@ -177,6 +181,8 @@ exports.editAboutMe = async (req, res) => {
     experience,
     email,
     nationality,
+    phoneNumber,
+    address,
     freelance,
     languages,
     modifiedBy,
@@ -216,6 +222,8 @@ exports.editAboutMe = async (req, res) => {
       existingData.experience === experience &&
       existingData.email === email &&
       existingData.nationality === nationality &&
+      existingData.phoneNumber === phoneNumber &&
+      existingData.address === address &&
       existingData.freelance === freelance &&
       JSON.stringify(existingData.languages) === JSON.stringify(languages) &&
       existingData.photo === imageUrl;
@@ -232,6 +240,8 @@ exports.editAboutMe = async (req, res) => {
       experience,
       email,
       nationality,
+      phoneNumber,
+      address,
       freelance,
       languages,
       photo: imageUrl,

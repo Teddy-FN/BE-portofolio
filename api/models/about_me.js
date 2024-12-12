@@ -25,6 +25,12 @@ module.exports = sequelize.define(
     email: {
       type: DataTypes.STRING,
     },
+    phoneNumber: {
+      type: DataTypes.STRING,
+    },
+    address: {
+      type: DataTypes.STRING,
+    },
     nationality: {
       type: DataTypes.STRING,
     },
