@@ -23,6 +23,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING,
       },
+      typeEducation: {
+        primaryKey: true,
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
+      major: {
+        primaryKey: true,
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       createdBy: {
         type: Sequelize.STRING,
       },

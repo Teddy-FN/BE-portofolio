@@ -39,7 +39,8 @@ exports.getEducation = async (req, res, next) => {
 };
 
 exports.postEducation = async (req, res, next) => {
-  const { degree, start, end, education, createdBy } = req.body;
+  const { degree, start, end, education, typeEducation, major, createdBy } =
+    req.body;
 
   try {
     const existingSkill = await Education.findOne({
@@ -54,6 +55,8 @@ exports.postEducation = async (req, res, next) => {
       startDate: start,
       endDate: end,
       institution: education,
+      typeEducation,
+      major,
       createdBy,
     });
 
@@ -98,7 +101,8 @@ exports.getEducationById = async (req, res, next) => {
 };
 
 exports.editEducation = async (req, res, next) => {
-  const { degree, start, end, education, modifiedBy } = req.body;
+  const { degree, start, end, education, typeEducation, major, modifiedBy } =
+    req.body;
 
   try {
     // Temukan data berdasarkan ID
@@ -115,6 +119,9 @@ exports.editEducation = async (req, res, next) => {
       existingData.degree === degree &&
       existingData.startDate === start &&
       existingData.endDate === end &&
+      existingData.typeEducation === typeEducation &&
+      existingData.major === major &&
+      existingData.endDate === end &&
       existingData.institution === education;
 
     if (isSameData) {
@@ -130,6 +137,8 @@ exports.editEducation = async (req, res, next) => {
         startDate: start,
         endDate: end,
         institution: education,
+        typeEducation,
+        major,
         modifiedBy,
       },
       { where: { id: req.params.id } }

@@ -24,6 +24,16 @@ module.exports = sequelize.define(
       primaryKey: true,
       type: DataTypes.STRING,
     },
+    typeEducation: {
+      primaryKey: true,
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
+    major: {
+      allowNull: true,
+      primaryKey: true,
+      type: DataTypes.STRING,
+    },
     createdBy: {
       type: DataTypes.STRING,
     },
