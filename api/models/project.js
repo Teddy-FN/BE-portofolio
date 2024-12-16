@@ -22,6 +22,9 @@ module.exports = sequelize.define(
     live: {
       type: DataTypes.STRING,
     },
+    status: {
+      type: DataTypes.STRING,
+    },
     category: {
       primaryKey: true,
       type: DataTypes.STRING,
