@@ -161,8 +161,16 @@ exports.getProject = async (req, res, next) => {
 };
 
 exports.postProject = async (req, res) => {
-  const { category, stack, title, description, live, github, createdBy } =
-    req.body;
+  const {
+    category,
+    stack,
+    title,
+    description,
+    live,
+    status,
+    github,
+    createdBy,
+  } = req.body;
 
   try {
     const imageFile = req.file;
@@ -205,6 +213,7 @@ exports.postProject = async (req, res) => {
       title,
       description,
       stack: stack?.includes(",") ? stack?.split(",") : [stack],
+      status,
       live,
       github,
       createdBy,
@@ -258,6 +267,7 @@ exports.editProject = async (req, res) => {
     title,
     description,
     live,
+    status,
     stack,
     github,
     createdBy,
@@ -278,6 +288,7 @@ exports.editProject = async (req, res) => {
       project.img === img &&
       project.title === title &&
       project.description === description &&
+      project.status === status &&
       project.live === live &&
       project.github === github &&
       project.createdBy === createdBy;
@@ -297,6 +308,7 @@ exports.editProject = async (req, res) => {
         description,
         stack: stack?.includes(",") ? stack?.split(",") : [stack],
         live,
+        status,
         github,
         modifiedBy,
       },
