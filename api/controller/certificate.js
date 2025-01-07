@@ -161,16 +161,7 @@ exports.getCertificate = async (req, res, next) => {
 };
 
 exports.postCertificate = async (req, res) => {
-  const {
-    category,
-    stack,
-    title,
-    description,
-    live,
-    status,
-    github,
-    createdBy,
-  } = req.body;
+  const { type, description, createdBy } = req.body;
 
   try {
     const imageFile = req.file;
@@ -210,14 +201,9 @@ exports.postCertificate = async (req, res) => {
 
     // Buat entri baru di tabel Certificate
     const newCertificate = await Certificate.create({
-      category,
       img: finalImageUrl,
-      title,
       description,
-      stack: stack?.includes(",") ? stack?.split(",") : [stack],
-      status,
-      live,
-      github,
+      type,
       createdBy,
     });
 
@@ -264,18 +250,7 @@ exports.getCertificateById = async (req, res, next) => {
 
 exports.editCertificate = async (req, res) => {
   const { id } = req.params;
-  const {
-    category,
-    img,
-    title,
-    description,
-    live,
-    status,
-    stack,
-    github,
-    createdBy,
-    modifiedBy,
-  } = req.body;
+  const { img, type, description, createdBy, modifiedBy } = req.body;
 
   try {
     // Check if the Certificate exists
@@ -287,13 +262,9 @@ exports.editCertificate = async (req, res) => {
 
     // Check if the data is unchanged
     const isSameData =
-      Certificate.category === category &&
       Certificate.img === img &&
-      Certificate.title === title &&
       Certificate.description === description &&
-      Certificate.status === status &&
-      Certificate.live === live &&
-      Certificate.github === github &&
+      Certificate.type === type &&
       Certificate.createdBy === createdBy;
 
     if (isSameData) {
@@ -305,14 +276,9 @@ exports.editCertificate = async (req, res) => {
     // Update Certificate data
     const updatedCertificate = await Certificate.update(
       {
-        category,
         img,
-        title,
         description,
-        stack: stack?.includes(",") ? stack?.split(",") : [stack],
-        live,
-        status,
-        github,
+        type,
         modifiedBy,
       },
       { returning: true }
