@@ -166,7 +166,6 @@ exports.postCertificate = async (req, res) => {
 
   try {
     const imageFile = req.file;
-    console.log("imageFile =>", imageFile);
 
     let imageUrl = null;
 
