@@ -7,7 +7,7 @@ const CLIENT_ID =
 const REDIRECT_URI = "https://developers.google.com/oauthplayground";
 const CLIENT_SECRET = "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";
 const REFRESH_TOKEN =
-  "1//04uGGBnZmyskPCgYIARAAGAQSNwF-L9IrrZrqCBZZlKGaJV9CgaRScDBmtsYUGK3KigT3qLzlRuP2rJKTFhDQhx8CdWQZSTBpJD8";
+  "1//04UruGF6gvn2JCgYIARAAGAQSNwF-L9IrUXXRzMfx3J-qNLrD1TqVXi01SWVh7bll3b_ROFThu8LTs6eV0XTf6B7gEFm5_EcoWRc";
 
 // Load Google API credentials
 const oauth2Client = new google.auth.OAuth2(
@@ -51,6 +51,7 @@ const deleteFile = async (fileId) => {
 // Function to upload an image to Google Drive
 const uploadImageToDrive = async (filePath, fileName) => {
   const accessTokenInfo = await oauth2Client.getAccessToken();
+  console.log("accessTokenInfo =>", accessTokenInfo);
 
   if (!accessTokenInfo.token) {
     throw new Error("Failed to obtain access token");
@@ -165,24 +166,27 @@ exports.postCertificate = async (req, res) => {
 
   try {
     const imageFile = req.file;
+    console.log("imageFile =>", imageFile);
 
     let imageUrl = null;
 
     if (imageFile) {
-      // Periksa apakah file dengan nama yang sama sudah ada di Google Drive
+      // Check if a file with the same name exists on Google Drive
       const existingFile = await findFileByName(imageFile.originalname);
 
-      // Jika file ada, hapus file lama dari Google Drive
+      // If file exists, delete the old image from Google Drive
       if (existingFile) {
         await deleteFile(existingFile.id);
       }
 
-      // Unggah gambar baru ke Google Drive
+      // Upload the new image to Google Drive and get the URL
       imageUrl = await uploadImageToDrive(
         imageFile.path,
         imageFile.originalname
       );
     }
+
+    console.log("imageUrl =>", imageUrl);
 
     // Validasi URL gambar
     const finalImageUrl = imageUrl;
@@ -193,7 +197,7 @@ exports.postCertificate = async (req, res) => {
 
     // Buat entri baru di tabel Certificate
     const newCertificate = await Certificate.create({
-      img: finalImageUrl,
+      image: finalImageUrl,
       description,
       type,
       createdBy,
