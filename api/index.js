@@ -36,6 +36,7 @@ const stackRoutes = require("./routes/stack");
 const serviceRoutes = require("./routes/service");
 const statsRoutes = require("./routes/stats");
 const statusProjectRoutes = require("./routes/statusProject");
+const certificateRoutes = require("./routes/certificate");
 
 app.use("/description", descriptionRoutes);
 app.use("/greeting", greetingsRoutes);
@@ -48,6 +49,7 @@ app.use("/stack", stackRoutes);
 app.use("/service", serviceRoutes);
 app.use("/stats", statsRoutes);
 app.use("/status-project", statusProjectRoutes);
+app.use("/certificate", certificateRoutes);
 
 // Error Handling for undefined routes
 app.use("*", (req, res, next) => {
