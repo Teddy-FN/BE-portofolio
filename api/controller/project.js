@@ -300,7 +300,7 @@ exports.editProject = async (req, res) => {
     }
 
     // Update project data
-    const updatedProject = await project.update(
+    await project.update(
       {
         category,
         img,
@@ -317,7 +317,7 @@ exports.editProject = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Project updated successfully", data: updatedProject });
+      .json({ message: "Project updated successfully", data: project });
   } catch (error) {
     console.error("Error updating project:", error);
     return res.status(500).json({ error: "Internal Server Error" });

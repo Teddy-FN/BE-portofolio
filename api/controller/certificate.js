@@ -245,22 +245,21 @@ exports.getCertificateById = async (req, res, next) => {
 
 exports.editCertificate = async (req, res) => {
   const { id } = req.params;
-  const { img, type, description, createdBy, modifiedBy } = req.body;
+  const { image, type, description, createdBy, modifiedBy } = req.body;
 
   try {
     // Check if the Certificate exists
-    const Certificate = await Certificate.findByPk(id);
+    const certificate = await Certificate.findByPk(id);
 
-    if (!Certificate) {
+    if (!certificate) {
       return res.status(404).json({ message: "Certificate not found" });
     }
 
     // Check if the data is unchanged
     const isSameData =
-      Certificate.img === img &&
-      Certificate.description === description &&
-      Certificate.type === type &&
-      Certificate.createdBy === createdBy;
+      certificate.image === image &&
+      certificate.description === description &&
+      certificate.type === type;
 
     if (isSameData) {
       return res
@@ -269,19 +268,20 @@ exports.editCertificate = async (req, res) => {
     }
 
     // Update Certificate data
-    const updatedCertificate = await Certificate.update(
+    await certificate.update(
       {
-        img,
+        image,
         description,
         type,
         modifiedBy,
+        createdBy,
       },
       { returning: true }
     );
 
     return res.status(200).json({
       message: "Certificate updated successfully",
-      data: updatedCertificate,
+      data: certificate,
     });
   } catch (error) {
     console.error("Error updating Certificate:", error);
