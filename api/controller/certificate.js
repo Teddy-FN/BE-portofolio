@@ -166,14 +166,6 @@ exports.postCertificate = async (req, res) => {
   try {
     const imageFile = req.file;
 
-    // Cek apakah title sudah ada di tabel
-    const existingCertificate = await Certificate.findOne({ where: { title } });
-    if (existingCertificate) {
-      return res
-        .status(400)
-        .json({ message: "Certificate title already exists" });
-    }
-
     let imageUrl = null;
 
     if (imageFile) {
