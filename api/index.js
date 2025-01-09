@@ -37,8 +37,10 @@ const serviceRoutes = require("./routes/service");
 const statsRoutes = require("./routes/stats");
 const statusProjectRoutes = require("./routes/statusProject");
 const certificateRoutes = require("./routes/certificate");
+const dashboardRoutes = require("./routes/dashboard");
 
 app.use("/description", descriptionRoutes);
+app.use("/dashboard", dashboardRoutes);
 app.use("/greeting", greetingsRoutes);
 app.use("/about-me", aboutMeRoutes);
 app.use("/education", educationRoutes);
