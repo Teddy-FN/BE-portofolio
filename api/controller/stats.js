@@ -1,10 +1,10 @@
-const Stack = require("../models/stack");
+const Skills = require("../models/skills");
 const Project = require("../models/project");
 const AboutMe = require("../models/about_me");
 
 exports.getAllStats = async (req, res, next) => {
   try {
-    const getDataSkill = await Stack.findAll();
+    const getDataSkill = await Skills.findAll();
     const getDataProject = await Project.findAll();
     const getDataAboutMe = await AboutMe.findAll();
 
