@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const statusProjectController = require("../controller/statusProject");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  statusProjectController = require("../controller/statusProject");
 
 // Get Status Project
 app.get("/get-status-project", statusProjectController.getStatusProject);

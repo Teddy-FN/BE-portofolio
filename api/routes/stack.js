@@ -1,9 +1,7 @@
-const express = require("express");
-
-const router = express.Router();
-
-// Controller
-const stackController = require("../controller/stack");
+const express = require("express"),
+  router = express.Router(),
+  // Controller
+  stackController = require("../controller/stack");
 
 router.get("/get-stack", stackController.getStack);
 router.post("/add-stack", stackController.postStack);

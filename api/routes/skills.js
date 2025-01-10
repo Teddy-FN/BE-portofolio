@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const skillsController = require("../controller/skills");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  skillsController = require("../controller/skills");
 
 // Get Skills
 app.get("/get-skills", skillsController.getSkills);
