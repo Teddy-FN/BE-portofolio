@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const descriptionController = require("../controller/description");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  descriptionController = require("../controller/description");
 
 app.get("/hello", descriptionController.greetings);
 

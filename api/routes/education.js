@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const educationController = require("../controller/education");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  educationController = require("../controller/education");
 
 // Get List Education
 app.get("/get-education", educationController.getEducation);

@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const serviceController = require("../controller/service");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  serviceController = require("../controller/service");
 
 // Get Service
 app.get("/get-service", serviceController.getService);

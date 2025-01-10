@@ -1,9 +1,7 @@
-const express = require("express");
-
-const app = express.Router();
-
-// Controller
-const experienceController = require("../controller/experience");
+const express = require("express"),
+  app = express.Router(),
+  // Controller
+  experienceController = require("../controller/experience");
 
 // Get List Experience
 app.get("/get-experience", experienceController.getExperience);

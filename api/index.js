@@ -1,15 +1,12 @@
 require("dotenv").config({ path: `${process.cwd()}/.env` });
-const PORT = process.env.APP_PORT || 7000;
-// const bodyParser = require("body-parser");
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-
-const corsOptions = {
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+const PORT = process.env.APP_PORT || 7000,
+  express = require("express"),
+  cors = require("cors"),
+  app = express(),
+  corsOptions = {
+    credentials: true,
+    optionsSuccessStatus: 200,
+  };
 
 // Middleware
 app.use(cors(corsOptions));
@@ -25,19 +22,20 @@ app.use(
 );
 
 // Routes
-const descriptionRoutes = require("./routes/description");
-const greetingsRoutes = require("./routes/greetings");
-const aboutMeRoutes = require("./routes/about-me");
-const educationRoutes = require("./routes/education");
-const experienceRoutes = require("./routes/experience");
-const skillsRoutes = require("./routes/skills");
-const projectRoutes = require("./routes/project");
-const stackRoutes = require("./routes/stack");
-const serviceRoutes = require("./routes/service");
-const statsRoutes = require("./routes/stats");
-const statusProjectRoutes = require("./routes/statusProject");
-const certificateRoutes = require("./routes/certificate");
-const dashboardRoutes = require("./routes/dashboard");
+const descriptionRoutes = require("./routes/description"),
+  greetingsRoutes = require("./routes/greetings"),
+  aboutMeRoutes = require("./routes/about-me"),
+  educationRoutes = require("./routes/education"),
+  experienceRoutes = require("./routes/experience"),
+  skillsRoutes = require("./routes/skills"),
+  projectRoutes = require("./routes/project"),
+  stackRoutes = require("./routes/stack"),
+  serviceRoutes = require("./routes/service"),
+  statsRoutes = require("./routes/stats"),
+  statusProjectRoutes = require("./routes/statusProject"),
+  certificateRoutes = require("./routes/certificate"),
+  dashboardRoutes = require("./routes/dashboard"),
+  authRoutes = require("./routes/user");
 
 app.use("/description", descriptionRoutes);
 app.use("/dashboard", dashboardRoutes);
@@ -52,6 +50,7 @@ app.use("/service", serviceRoutes);
 app.use("/stats", statsRoutes);
 app.use("/status-project", statusProjectRoutes);
 app.use("/certificate", certificateRoutes);
+app.use("/auth", authRoutes);
 
 // Error Handling for undefined routes
 app.use("*", (req, res, next) => {
