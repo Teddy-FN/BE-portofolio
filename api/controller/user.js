@@ -27,7 +27,7 @@ exports.login = async (req, res, next) => {
     console.log("findUser =>", findUser);
 
     // If no user is found or password does not match
-    if (!findUser || !body.password === findUser.password) {
+    if (!findUser || body.password !== findUser.password) {
       return res.status(401).json({
         message: "User Name / Email & Password Tidak Ditemukan",
       });
