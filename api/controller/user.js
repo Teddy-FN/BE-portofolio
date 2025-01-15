@@ -83,41 +83,22 @@ exports.login = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
   try {
     const body = req.body;
-    const bodyUserNameOrEmail = body?.userName || body?.email;
-    const storeId = body?.store; // Store identifier passed from FE
-
-    if (!bodyUserNameOrEmail || !storeId) {
-      return res.status(400).json({
-        message: "User Name / Email & Store ID Tidak Boleh Kosong",
-      });
-    }
-
-    // Check if the input is an email or username using a regex
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bodyUserNameOrEmail);
 
     // Find user by email or userName and store ID
-    const findUser = isEmail
-      ? await User.findOne({
-          where: {
-            email: bodyUserNameOrEmail,
-            store: storeId, // Ensure it matches the store
-          },
-        })
-      : await User.findOne({
-          where: {
-            userName: bodyUserNameOrEmail,
-            store: storeId,
-          },
-        });
+    const findUser = await User.findOne({
+      where: {
+        id: body.id, // Ensure it matches the store
+      },
+    });
 
     // If user is found, update status to inactive
     if (findUser) {
       await User.update(
         { statusActive: false }, // Set status to inactive
         {
-          where: isEmail
-            ? { email: bodyUserNameOrEmail, store: storeId }
-            : { userName: bodyUserNameOrEmail, store: storeId },
+          where: {
+            id: body.id,
+          },
         }
       );
 
