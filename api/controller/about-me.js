@@ -162,7 +162,7 @@ exports.postAboutMe = async (req, res, next) => {
       nationality,
       phoneNumber,
       address,
-      freelance: freelance === "true", // Ensure boolean type
+      freelance,
       languages: languagesArray,
       createdBy,
     });
@@ -178,6 +178,7 @@ exports.editAboutMe = async (req, res) => {
   const { id } = req.params;
   const {
     name,
+    image,
     experience,
     email,
     nationality,
@@ -234,6 +235,9 @@ exports.editAboutMe = async (req, res) => {
         .json({ message: "No changes detected. Data is identical." });
     }
 
+    const languagesArray =
+      typeof languages === "string" ? languages.split(",") : languages;
+
     // Update data pengguna dengan data baru
     await existingData.update({
       name,
@@ -243,8 +247,8 @@ exports.editAboutMe = async (req, res) => {
       phoneNumber,
       address,
       freelance,
-      languages,
-      photo: imageUrl,
+      languages: languagesArray,
+      photo: imageUrl || image,
       modifiedBy,
     });
 
