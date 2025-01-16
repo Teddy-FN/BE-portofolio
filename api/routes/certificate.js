@@ -35,7 +35,7 @@ app.post("/add-certificate", upload, certificateController.postCertificate);
 
 app.get("/get-certificate/:id", certificateController.getCertificateById);
 
-app.put("/edit-certificate/:id", certificateController.editCertificate);
+app.put("/edit-certificate/:id", upload, certificateController.editCertificate);
 
 app.delete("/delete-certificate/:id", certificateController.deleteCertificate);
 

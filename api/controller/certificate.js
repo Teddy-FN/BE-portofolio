@@ -247,12 +247,41 @@ exports.editCertificate = async (req, res) => {
   const { id } = req.params;
   const { image, type, description, createdBy, modifiedBy } = req.body;
 
+  const imageFile = req.file ? req.file : null;
+
   try {
     // Check if the Certificate exists
     const certificate = await Certificate.findByPk(id);
 
     if (!certificate) {
       return res.status(404).json({ message: "Certificate not found" });
+    }
+
+    let imageUrl = null;
+
+    if (imageFile) {
+      // Check if a file with the same name exists on Google Drive
+      const existingFile = await findFileByName(imageFile.originalname);
+
+      // If file exists, delete the old image from Google Drive
+      if (existingFile) {
+        await deleteFile(existingFile.id);
+      }
+
+      // Upload the new image to Google Drive and get the URL
+      imageUrl = await uploadImageToDrive(
+        imageFile.path,
+        imageFile.originalname
+      );
+    }
+
+    console.log("imageUrl =>", imageUrl);
+
+    // Validasi URL gambar
+    const finalImageUrl = imageUrl;
+
+    if (!finalImageUrl) {
+      return res.status(400).json({ message: "Invalid image URL" });
     }
 
     // Check if the data is unchanged
@@ -270,7 +299,7 @@ exports.editCertificate = async (req, res) => {
     // Update Certificate data
     await certificate.update(
       {
-        image,
+        image: imageUrl ?? image,
         description,
         type,
         modifiedBy,
