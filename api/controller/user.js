@@ -2,7 +2,48 @@
 /* eslint-disable no-unused-vars */
 const User = require("../models/user");
 const generateToken = require("../../utils/jwtConvert");
+const { Op } = require("sequelize");
 
+// Register
+exports.register = async (req, res, next) => {
+  const body = req.body;
+  try {
+    const findUser = await User.findOne({
+      where: {
+        [Op.or]: [{ userName: body.userName }, { email: body.email }],
+      },
+    });
+
+    if (findUser) {
+      return res.status(401).json({
+        message: "User Name / Email & Ditemukan",
+      });
+    }
+
+    const newUser = await User.create({
+      userType: body.userType,
+      userName: body.userName,
+      email: body.email,
+      password: body.password,
+    });
+
+    return res.status(201).json({
+      message: "Register created successfully",
+      data: newUser,
+    });
+  } catch (error) {
+    console.log("ERROR BRAY =>", error);
+
+    return res.status(500).json({
+      message: "Terjadi Kesalahan Internal Server",
+    });
+  } finally {
+    console.log("resEND");
+    return res.end();
+  }
+};
+
+// Login
 exports.login = async (req, res, next) => {
   const body = req.body;
   const bodyUserNameOrEmail = body.userName; // userName input from FE
@@ -79,7 +120,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// User Logout
+// Logout
 exports.logout = async (req, res, next) => {
   try {
     const body = req.body;
